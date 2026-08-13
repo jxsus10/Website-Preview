@@ -44,6 +44,7 @@ function decodeConfig(base64) {
     } catch (e) {
         console.error("Decoding failed", e);
         return null;
+    }
 }
 
 /* ==========================================================================
