@@ -449,11 +449,11 @@ function initDashboard() {
                             <h1 style="font-size:1rem; font-family:sans-serif; color: #fff;">Preview<span>Vault</span></h1>
                         </div>
                         <span class="viewer-badge">Protected Preview</span>
-                        <span class="viewer-banner-title" style="color: var(--text-secondary); font-size: 0.85rem;">Project: \\\${escapeHtml(config.name)}</span>
+                        <span class="viewer-banner-title" style="color: var(--text-secondary); font-size: 0.85rem;">Project: \\${escapeHtml(config.name)}</span>
                     </div>
                     <div class="viewer-banner-cta">
-                        \\\${timerHtml}
-                        <a href="\\${escapeHtml(config.bannerButtonUrl || '#')}" target="_blank" class="btn btn-primary btn-sm">\\\${escapeHtml(config.bannerButtonText)}</a>
+                        \\${timerHtml}
+                        <a href="\\${escapeHtml(config.bannerButtonUrl || '#')}" target="_blank" class="btn btn-primary btn-sm">\\${escapeHtml(config.bannerButtonText)}</a>
                     </div>
                 \`;
                 viewerContainer.insertBefore(banner, viewportContainer);
@@ -522,9 +522,9 @@ function initDashboard() {
                     lock.innerHTML = \`
                         <div class="blocker-card">
                             <div class="blocker-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                            <h2>\\\${escapeHtml(title)}</h2>
-                            <p>\\\${escapeHtml(body)}</p>
-                            <a href="\\${escapeHtml(targetCtaUrl)}" class="btn btn-primary btn-full btn-lg">\\\${escapeHtml(config.blurOverlayCta)}</a>
+                            <h2>\\${escapeHtml(title)}</h2>
+                            <p>\\${escapeHtml(body)}</p>
+                            <a href="\\${escapeHtml(targetCtaUrl)}" class="btn btn-primary btn-full btn-lg">\\${escapeHtml(config.blurOverlayCta)}</a>
                         </div>
                     \`;
                     viewportContainer.appendChild(lock);
@@ -560,7 +560,7 @@ function initDashboard() {
         });
     </script>
 </body>
-</html>\`;
+</html>`;
 
         const blob = new Blob([standaloneHTML], { type: 'text/html' });
         const link = document.createElement('a');
