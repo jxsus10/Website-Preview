@@ -2,8 +2,7 @@
    CLIENT PREVIEW VAULT - LOGIC
    ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Determine which app mode we are running
+function startApp() {
     const isDashboard = document.getElementById('dashboard-app') !== null;
     const isViewer = document.getElementById('viewer-app') !== null;
 
@@ -12,7 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (isViewer) {
         initViewer();
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startApp);
+} else {
+    startApp();
+}
 
 /* ==========================================================================
    URL CONFIGURATION ENCODING / DECODING
@@ -276,7 +281,7 @@ function initDashboard() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preview Mode | \${escapeHtml(project.name)}</title>
+    <title>Preview Mode | ${escapeHtml(project.name)}</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -411,7 +416,7 @@ function initDashboard() {
     </div>
     
     <script>
-        const config = \${JSON.stringify(project)};
+        const config = ${JSON.stringify(project)};
         
         function escapeHtml(str) {
             if (!str) return '';
@@ -444,11 +449,11 @@ function initDashboard() {
                             <h1 style="font-size:1rem; font-family:sans-serif; color: #fff;">Preview<span>Vault</span></h1>
                         </div>
                         <span class="viewer-badge">Protected Preview</span>
-                        <span class="viewer-banner-title" style="color: var(--text-secondary); font-size: 0.85rem;">Project: \\\$\\\{escapeHtml(config.name)\\\}</span>
+                        <span class="viewer-banner-title" style="color: var(--text-secondary); font-size: 0.85rem;">Project: \\\${escapeHtml(config.name)}</span>
                     </div>
                     <div class="viewer-banner-cta">
-                        \\\$\\\{timerHtml\\\}
-                        <a href="\\\$\\\{escapeHtml(config.bannerButtonUrl || '#')\\\}" target="_blank" class="btn btn-primary btn-sm">\\\$\\\{escapeHtml(config.bannerButtonText)\\\}</a>
+                        \\\${timerHtml}
+                        <a href="\\${escapeHtml(config.bannerButtonUrl || '#')}" target="_blank" class="btn btn-primary btn-sm">\\\${escapeHtml(config.bannerButtonText)}</a>
                     </div>
                 \`;
                 viewerContainer.insertBefore(banner, viewportContainer);
@@ -517,9 +522,9 @@ function initDashboard() {
                     lock.innerHTML = \`
                         <div class="blocker-card">
                             <div class="blocker-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                            <h2>\\\$\\\{escapeHtml(title)\\\}</h2>
-                            <p>\\\$\\\{escapeHtml(body)\\\}</p>
-                            <a href="\\\$\\\{escapeHtml(targetCtaUrl)\\\}" class="btn btn-primary btn-full btn-lg">\\\$\\\{escapeHtml(config.blurOverlayCta)\\\}</a>
+                            <h2>\\\${escapeHtml(title)}</h2>
+                            <p>\\\${escapeHtml(body)}</p>
+                            <a href="\\${escapeHtml(targetCtaUrl)}" class="btn btn-primary btn-full btn-lg">\\\${escapeHtml(config.blurOverlayCta)}</a>
                         </div>
                     \`;
                     viewportContainer.appendChild(lock);
@@ -560,7 +565,7 @@ function initDashboard() {
         const blob = new Blob([standaloneHTML], { type: 'text/html' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = \`\${project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-preview.html\`;
+        link.download = project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-preview.html';
         link.click();
         showToast("Standalone protected preview HTML downloaded!", 'success');
     });
