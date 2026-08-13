@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Vault | Admin Dashboard</title>
+    <meta name="description" content="Securely preview websites to prospects with customizable visual gates, watermarks, and timers.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body id="dashboard-app">
+
+    <!-- Header Panel -->
+    <header class="app-header">
+        <div class="brand">
+            <span class="brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            <div>
+                <h1>Preview<span>Vault</span></h1>
+            </div>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-circle" style="color: var(--primary); font-size: 0.6rem; margin-right: 0.35rem; animation: pulseGlow 1.5s infinite;"></i> Serverless Engine Active</span>
+            <button class="btn btn-secondary btn-sm" onclick="window.open('viewer.html', '_blank')"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Blank Viewer</button>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard Container -->
+    <div class="admin-container">
+        
+        <!-- Sidebar - Project Selector -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Your Projects</h3>
+                <button class="btn btn-primary btn-sm" id="btn-new-project" title="Create New Draft"><i class="fa-solid fa-plus"></i> New</button>
+            </div>
+            
+            <div class="project-list" id="project-list">
+                <!-- Javascript will inject list of items here -->
+                <div style="display: flex; justify-content: center; padding: 2rem;">
+                    <i class="fa-solid fa-spinner spinner" style="font-size: 1.5rem; color: var(--text-muted);"></i>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <button class="btn btn-danger btn-sm btn-full" id="btn-delete-project" style="display: none;"><i class="fa-solid fa-trash-can"></i> Delete Active Draft</button>
+            </div>
+        </aside>
+
+        <!-- Main Configuration & Simulator Workspace -->
+        <main class="workspace">
+            
+            <!-- Configurator Form Panel -->
+            <section class="config-panel">
+                <form id="config-form" onsubmit="return false;">
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <h2 style="font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Link Configurator</h2>
+                        
+                        <!-- Project Name -->
+                        <div class="form-group">
+                            <label for="project-name">Project / Client Name</label>
+                            <input type="text" id="project-name" class="input-control" placeholder="e.g., Rise and Shine Daycare Demo" required>
+                        </div>
+                        
+                        <!-- Source Selection Tabs -->
+                        <div class="form-group">
+                            <label>Website Source File/Link</label>
+                            <div class="tab-container">
+                                <button type="button" class="tab-btn active" id="tab-src-url"><i class="fa-solid fa-link"></i> Website URL</button>
+                                <button type="button" class="tab-btn" id="tab-src-code"><i class="fa-solid fa-code"></i> Paste Raw HTML</button>
+                            </div>
+                            <input type="hidden" id="source-type" value="url">
+
+                            <!-- URL source control -->
+                            <div id="url-source-group">
+                                <input type="url" id="url-source" class="input-control" placeholder="https://example.com or http://localhost:5500">
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;"><i class="fa-solid fa-circle-info"></i> Note: For target URLs, make sure the hosting provider does not block framing (X-Frame-Options).</p>
+                            </div>
+
+                            <!-- Raw Code source control -->
+                            <div id="code-source-group" class="hidden">
+                                <textarea id="code-source" class="input-control" placeholder="<!DOCTYPE html>&#10;<html>&#10;  <head>&#10;    <style>body { background: #f8fafc; font-family: sans-serif; text-align: center; }</style>&#10;  </head>&#10;  <body>&#10;    <h1>Daycare Client Sample</h1>&#10;  </body>&#10;</html>"></textarea>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;"><i class="fa-solid fa-circle-info"></i> Pasting HTML acts as a self-contained local preview. Safe from cross-origin iframe blocks!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Options Toggles -->
+                    <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem;">
+                        <h2 style="font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-user-shield" style="color: var(--primary);"></i> Protection Barriers</h2>
+                        
+                        <!-- 1. Watermark overlay -->
+                        <div>
+                            <div class="settings-row">
+                                <div class="settings-info">
+                                    <span class="settings-title">Diagonal Watermark Grid</span>
+                                    <span class="settings-desc">Overlays semi-transparent repeating text to prevent clean page screenshots.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="watermark-toggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="sub-config" id="watermark-config">
+                                <div class="form-group">
+                                    <label for="watermark-text">Watermark Text</label>
+                                    <input type="text" id="watermark-text" class="input-control" value="SAMPLE PREVIEW">
+                                </div>
+                                <div class="form-group">
+                                    <label for="watermark-style">Display Style</label>
+                                    <select id="watermark-style" class="input-control">
+                                        <option value="grid">Grid Pattern (Repeating Tiles)</option>
+                                        <option value="float">Centered Badge (Single Large)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Watermark Opacity</label>
+                                    <div class="range-group">
+                                        <input type="range" id="watermark-opacity" min="0.05" max="0.5" step="0.01" value="0.15">
+                                        <span class="range-val" id="watermark-opacity-val">0.15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Blur / Blocker Lock overlay -->
+                        <div>
+                            <div class="settings-row">
+                                <div class="settings-info">
+                                    <span class="settings-title">Interactive Blur Blocker</span>
+                                    <span class="settings-desc">Automatically blurs the website view after N seconds and displays a blocking card.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="blur-toggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="sub-config" id="blur-config">
+                                <div class="form-group">
+                                    <label>Trigger Delay</label>
+                                    <div class="range-group">
+                                        <input type="range" id="blur-delay" min="3" max="60" step="1" value="10">
+                                        <span class="range-val" id="blur-delay-val">10s</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="blur-text">Lockout Heading</label>
+                                    <input type="text" id="blur-text" class="input-control" value="PREVIEW PERIOD EXPIRED">
+                                </div>
+                                <div class="form-group">
+                                    <label for="blur-cta">Call-To-Action Button Text</label>
+                                    <input type="text" id="blur-cta" class="input-control" value="Unlock Full Site">
+                                </div>
+                                <div class="form-group">
+                                    <label for="blur-cta-url">Call-To-Action Button Redirect (optional)</label>
+                                    <input type="url" id="blur-cta-url" class="input-control" placeholder="e.g. your payment link, WhatsApp, or contact page">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Navigation Timer limit (countdown header clock) -->
+                        <div>
+                            <div class="settings-row">
+                                <div class="settings-info">
+                                    <span class="settings-title">Countdown Expiry Clock</span>
+                                    <span class="settings-desc">Renders an active countdown timer in the header of the page. Locks view when reaches zero.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="timer-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="sub-config hidden" id="timer-config">
+                                <div class="form-group">
+                                    <label>Countdown Duration</label>
+                                    <div class="range-group">
+                                        <input type="range" id="timer-duration" min="5" max="300" step="5" value="30">
+                                        <span class="range-val" id="timer-duration-val">30s</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Click Blocker (Read-Only) -->
+                        <div class="settings-row">
+                            <div class="settings-info">
+                                <span class="settings-title">Disable Clicks & Text Copying</span>
+                                <span class="settings-desc">Prevents all clicks, selections, inspect keybinds (F12, Ctrl+Shift+I), and right-clicks.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="click-block-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- 5. Top Header Info Banner -->
+                        <div>
+                            <div class="settings-row">
+                                <div class="settings-info">
+                                    <span class="settings-title">Top Warning Header Banner</span>
+                                    <span class="settings-desc">Shows a clean banner bar on top reminding them it is an unlicensed draft review.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="banner-toggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="sub-config" id="banner-config">
+                                <div class="form-group">
+                                    <label for="banner-text">Banner Text Message</label>
+                                    <input type="text" id="banner-text" class="input-control" value="You are viewing a limited preview of this website.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="banner-btn-text">Banner Button Text</label>
+                                    <input type="text" id="banner-btn-text" class="input-control" value="Request Unlock">
+                                </div>
+                                <div class="form-group">
+                                    <label for="banner-btn-url">Banner Button Redirect URL</label>
+                                    <input type="url" id="banner-btn-url" class="input-control" placeholder="https://yourportfolio.com/contact">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div style="margin-top: 3rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <button class="btn btn-primary btn-lg btn-full" id="btn-save-project"><i class="fa-solid fa-floppy-disk"></i> Save Configuration</button>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                            <button class="btn btn-secondary btn-full" id="btn-copy-link"><i class="fa-solid fa-copy"></i> Copy Share Link</button>
+                            <button class="btn btn-secondary btn-full" id="btn-download-html" title="Generate standalone HTML files clients can run by double-clicking"><i class="fa-solid fa-download"></i> Export Single HTML</button>
+                        </div>
+                    </div>
+
+                </form>
+            </section>
+
+            <!-- Simulator Panel -->
+            <section class="simulator-panel">
+                <div class="simulator-header">
+                    <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-display"></i> Preview Simulator (Prospect View)</h3>
+                    <div class="simulator-controls">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-card); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">Auto-refreshing</span>
+                    </div>
+                </div>
+
+                <div class="simulator-screen">
+                    <div id="simulator-container" style="width: 100%; height: 100%; position: relative;">
+                        <!-- The simulator frame will render here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast message notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon"><i class="fa-solid fa-circle-check"></i></span>
+        <span class="toast-text">Success message updated!</span>
+    </div>
+
+    <!-- Share Link Modal -->
+    <div class="modal-overlay" id="share-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Share Preview Link</h3>
+                <button class="modal-close" id="close-share-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">This generated preview link contains your security layout serialized in the URL itself. No backend database required—it runs dynamically for anyone who opens it!</p>
+                <div class="form-group">
+                    <label for="modal-share-url">Shareable URL</label>
+                    <div class="link-share-box">
+                        <input type="text" id="modal-share-url" class="input-control" readonly style="background: rgba(15,23,42,0.5); font-family: monospace; font-size: 0.8rem;">
+                        <button class="btn btn-primary" id="modal-copy-btn"><i class="fa-solid fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 0.5rem;">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;"><i class="fa-solid fa-lightbulb" style="color: var(--accent);"></i> <strong>Tip:</strong> If you want to send them a file instead of a link, use the <strong>"Export Single HTML"</strong> button on the dashboard. It downloads a self-contained preview file they can open directly on their computer!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript Assets -->
+    <script src="app.js"></script>
+</body>
+</html>
