@@ -470,8 +470,8 @@ input:checked + .slider:before {
     gap: 1rem;
 }
 
-.sub-config.hidden {
-    display: none;
+.sub-config.hidden, .hidden {
+    display: none !important;
 }
 
 /* Slider Config Styling */
